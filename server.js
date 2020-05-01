@@ -1,12 +1,13 @@
+// Dependencies
 const inquirer = require("inquirer");
 const mysql = require("mysql");
 const cTable = require("console.table");
-// Dependencies
-//const mysql = require("mysql2/promise");
 
 const mainQuery =
   'SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, CONCAT(m.first_name, " ", m.last_name) AS manager FROM employee e INNER JOIN role ON e.role_id = role.id  INNER JOIN department ON role.department_id = department.id LEFT JOIN employee m ON m.id = e.manager_id';
 const lineBreak = "\n \n \n \n \n \n \n";
+
+// Create possible options
 
 const TEXT_VIEW_EMPLOYEES = "View all employees";
 const TEXT_ADD_DEPARTMENT = "Add a department";
@@ -23,7 +24,7 @@ const TEXT_DELETE_ROLE = "Delete a role";
 const TEXT_DELETE_EMPLOYEE = "Delete an employee";
 const TEXT_VIEW_DEPARTMENT_BUDGET = "View all department budgets";
 const EXIT = "Exit";
-
+// creating connection to the database
 const connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
@@ -38,27 +39,7 @@ connection.connect(function (err) {
   queryUser();
 });
 
-// MySQL DB Connection Information
-// (remember to change this with your login credentials)
-// const connection = {
-//   host: "localhost",
-//   port: 3306,
-//   user: "root",
-//   password: "password",
-//   database: "employees_db",
-// };
-// // Open a connection to the database
-// let db;
-// mysql
-//   .createConnection(connection)
-//   .then((connection) => {
-//     db = connection;
-//     console.log("connected to DB as id " + connection.threadId);
-//   })
-//   .catch((err) => {
-//     console.log("error connecting to DB: " + err.stack);
-//     process.exit(1); // Quit node if there is no DB connection
-//   });
+// using inquirer to get input from the user
 
 function queryUser() {
   inquirer
@@ -135,6 +116,7 @@ function queryUser() {
       }
     });
 }
+// A function needed to view all employees
 
 function viewAllEmployees() {
   connection.query(mainQuery, function (err, res) {
@@ -145,7 +127,7 @@ function viewAllEmployees() {
   });
   queryUser();
 }
-
+// A function needed to add department
 function addDepartment() {
   inquirer
     .prompt({
@@ -168,7 +150,7 @@ function addDepartment() {
       queryUser();
     });
 }
-
+// function used to add role to the application
 function addRole() {
   connection.query("SELECT * FROM department", function (err, results) {
     if (err) throw err;
@@ -219,7 +201,7 @@ function addRole() {
       });
   });
 }
-
+// function to add employee
 function addEmployee() {
   inquirer
     .prompt([
@@ -301,7 +283,7 @@ function addEmployee() {
       });
     });
 }
-
+// function to view departments
 function viewDepartments() {
   connection.query("SELECT * FROM department", function (err, res) {
     if (err) throw err;
@@ -311,7 +293,7 @@ function viewDepartments() {
   });
   queryUser();
 }
-
+// function needed to view roles
 function viewRoles() {
   const query =
     "SELECT role.id, title, salary, department.name AS department FROM role INNER JOIN department ON role.department_id = department.id";
@@ -323,7 +305,7 @@ function viewRoles() {
   });
   queryUser();
 }
-
+// function for updating employee role
 function updateEmployeeRole() {
   connection.query("SELECT * FROM employee", function (err, results) {
     if (err) throw err;
@@ -415,7 +397,7 @@ function updateEmployeeRole() {
       });
   });
 }
-
+// function view role
 function viewByRole() {
   connection.query("SELECT * FROM role", function (err, results) {
     if (err) throw err;
@@ -445,7 +427,7 @@ function viewByRole() {
       });
   });
 }
-
+// function to update the manager
 function updateManager() {
   connection.query("SELECT * FROM employee", function (err, results) {
     if (err) throw err;
@@ -514,7 +496,7 @@ function updateManager() {
       });
   });
 }
-
+// function to view manager
 function viewByManager() {
   connection.query("SELECT * FROM employee", function (err, results) {
     if (err) throw err;
@@ -552,7 +534,7 @@ function viewByManager() {
       });
   });
 }
-
+// function needed to delete department
 function deleteDepartment() {
   connection.query("SELECT * FROM department", function (err, results) {
     if (err) throw err;
@@ -586,7 +568,7 @@ function deleteDepartment() {
       });
   });
 }
-
+// function needed to delete role
 function deleteRole() {
   connection.query("SELECT * FROM role", function (err, results) {
     if (err) throw err;
@@ -623,7 +605,7 @@ function deleteRole() {
       });
   });
 }
-
+// function to delete employee
 function deleteEmployee() {
   connection.query("SELECT * FROM employee", function (err, results) {
     if (err) throw err;
@@ -663,7 +645,7 @@ function deleteEmployee() {
       });
   });
 }
-
+// function to view budget
 function viewBudgets() {
   const query =
     "SELECT department.id, name, SUM(role.salary) total_dept_budget FROM department INNER JOIN role ON department.id = role.department_id INNER JOIN employee ON role.id = employee.role_id GROUP BY department.id";
