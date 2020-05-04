@@ -44,7 +44,7 @@ This application is a **C**ontent **M**anagement **S**ystem which allows a user 
 
 - Run
 
-> node server.js
+> node index.js
 
 - Select whichever action you would like and answer any prompted questions
 - When you are done select Exit
