@@ -1,6 +1,6 @@
 // Dependencies
 const inquirer = require("inquirer");
-const mysql = require("mysql");
+const mysql = require("mysql2/promise");
 const cTable = require("console.table");
 
 const mainQuery =
